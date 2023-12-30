@@ -23,6 +23,11 @@ public class PointInMaze
             return x == ((PointInMaze)obj).x && z == ((PointInMaze)obj).z;
     }
 
+    public static PointInMaze operator +(PointInMaze a, PointInMaze b)
+    {
+        return new PointInMaze(a.x + b.x, a.z + b.z);
+    }
+
     public override int GetHashCode()
     {
         return 0;

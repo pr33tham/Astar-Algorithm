@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 public class GenerateMaze : MonoBehaviour
 {
@@ -12,12 +11,10 @@ public class GenerateMaze : MonoBehaviour
 
     public GameObject parent;
     public new Transform camera;
-    public Material cubeMaterial;
     public int length = 10; //x
     public int depth = 10; //z
     public byte[,] map;
     public int scale; // size of walls
-
 
     private void InitialiseMaze()
     {
@@ -27,7 +24,6 @@ public class GenerateMaze : MonoBehaviour
             for (int x = 0; x < length; x++)
             {
                 map[x, z] = 1;
-
             }
         }
     }
@@ -37,7 +33,6 @@ public class GenerateMaze : MonoBehaviour
         {
             for (int x = 0; x < length; x++)
             {
-                if (x == 0 || z == 0 || x == length - 1 || z == depth - 1) continue; // do not change for end walls
                 if (Random.Range(0, 100) < 50)
                 {
                     map[x, z] = 0;
@@ -53,12 +48,12 @@ public class GenerateMaze : MonoBehaviour
             {
                 if (map[x, z] == 1)
                 {
-                    Vector3 location = new Vector3(x * scale, 0, z * scale);
+                    Vector3 location = new Vector3(x * scale, scale / 2, z * scale);
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube) as GameObject;
                     cube.transform.parent = parent.transform;
                     cube.transform.position = location;
                     cube.transform.localScale = new Vector3(scale, scale, scale);
-                    cube.GetComponent<Renderer>().material = cubeMaterial;
+                    //cube.GetComponent<Renderer>().material = cubeMaterial;
                 }
             }
         }
@@ -103,12 +98,12 @@ public class GenerateMaze : MonoBehaviour
     void Start()
     {
         int calculatedDistace = scale * length;
-        camera.transform.position = new Vector3(calculatedDistace/2, calculatedDistace, calculatedDistace/2);
+        camera.transform.position = new Vector3(calculatedDistace / 2, calculatedDistace, calculatedDistace / 2);
         InitialiseMaze();
         Generate();
         GenerateWalls();
         GenerateGround();
     }
-   
+
 
 }
