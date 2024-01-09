@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class PathMarker
 {
@@ -36,7 +34,7 @@ public class PathMarker
     }
 }
 
-public class AStarAlgorithm : MonoBehaviour
+public class Algorithm : MonoBehaviour
 {
 
     public GenerateMaze maze;
@@ -141,7 +139,7 @@ public class AStarAlgorithm : MonoBehaviour
         foreach (PointInMaze dir in maze.directions)
         {
 
-            PointInMaze neighbour = dir + currentNode.location;
+            PointInMaze neighbour = dir + currentNode.location ;
 
             if (maze.map[neighbour.x, neighbour.z] == 1) continue;
             if (neighbour.x < 1 || neighbour.x >= maze.length || neighbour.z < 1 || neighbour.z >= maze.depth) continue;
