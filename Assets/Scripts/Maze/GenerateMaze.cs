@@ -1,65 +1,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenerateMaze : MonoBehaviour
-{
-    public List<PointInMaze> directions = new List<PointInMaze>() {
-                                            new PointInMaze(1,0),
-                                            new PointInMaze(0,1),
-                                            new PointInMaze(-1,0),
-                                            new PointInMaze(0,-1) };
+public class GenerateMaze : MonoBehaviour {
 
+    public List<CoordinatesInMaze> directions = new List<CoordinatesInMaze>() {
+                                            new CoordinatesInMaze(1,0),
+                                            new CoordinatesInMaze(0,1),
+                                            new CoordinatesInMaze(-1,0),
+                                            new CoordinatesInMaze(0,-1) };
+
+    public int length = 10;
+    public int depth = 10;
+    public int scale = 5; // change it to 5 for plane to place perfectly
     public GameObject parent;
-    public new Transform camera;
-    public int length = 10; //x
-    public int depth = 10; //z
-    public byte[,] map;
-    public int scale; // size of walls
 
-    private void InitialiseMaze()
-    {
+    public byte[,] map;
+
+    //camera angle
+
+    //  set everything as wall
+    private void Initialise() {
         map = new byte[length, depth];
-        for (int z = 0; z < depth; z++)
-        {
-            for (int x = 0; x < length; x++)
-            {
-                map[x, z] = 1;
+        for (int z = 0; z < depth; z++) {
+            for (int x = 0; x < length; x++) map[x, z] = 1; // wall
+        }
+    }
+    //  corridors
+    public virtual void Generate() {
+        for (int z = 0; z < depth; z++) {
+            for (int x = 0; x < length; x++) {
+                if (Random.Range(0, 100) < 50) map[x, z] = 0; //corridor
             }
         }
     }
-    public virtual void Generate()
-    {
-        for (int z = 0; z < depth; z++)
-        {
+
+    private void GenerateWalls() {
+        for (int z = 0; z < depth; z++) {
             for (int x = 0; x < length; x++)
-            {
-                if (Random.Range(0, 100) < 50)
-                {
-                    map[x, z] = 0;
-                }
-            }
-        }
-    }
-    void GenerateWalls()
-    {
-        for (int z = 0; z < depth; z++)
-        {
-            for (int x = 0; x < length; x++)
-            {
-                if (map[x, z] == 1)
-                {
-                    Vector3 location = new Vector3(x * scale, scale / 2, z * scale);
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube) as GameObject;
+                if (map[x, z] == 1) {
+                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube.name = "Cube[" + x.ToString() + ", " + z.ToString() + "]";
                     cube.transform.parent = parent.transform;
-                    cube.transform.position = location;
                     cube.transform.localScale = new Vector3(scale, scale, scale);
-                    //cube.GetComponent<Renderer>().material = cubeMaterial;
+                    cube.transform.position = new Vector3(x * scale, scale / 2, z * scale);
                 }
-            }
         }
     }
-    public int CountSquareNeighbours(int x, int z)
-    {
+
+    public int CountSquareNeighbours(int x, int z) {
         int count = 0;
         if (x <= 0 || x >= length - 1 || z <= 0 || z >= depth - 1) return 5;
         if (map[x - 1, z] == 0) count++;
@@ -69,8 +57,7 @@ public class GenerateMaze : MonoBehaviour
         return count;
     }
 
-    public int CountDiagonalNeighbours(int x, int z)
-    {
+    public int CountDiagonalNeighbours(int x, int z) {
         int count = 0;
         if (x <= 0 || x >= length - 1 || z <= 0 || z >= depth - 1) return 5;
         if (map[x - 1, z - 1] == 0) count++;
@@ -80,30 +67,26 @@ public class GenerateMaze : MonoBehaviour
         return count;
     }
 
-    public int CountAllNeighbours(int x, int z)
-    {
+    public int CountAllNeighbours(int x, int z) {
         return CountSquareNeighbours(x, z) + CountDiagonalNeighbours(x, z);
     }
-    void GenerateGround()
-    {
-        float pos = (scale * length) / 2;
-        Vector3 position = new Vector3(pos - 2.5f, 0, pos - 2.5f);
+
+    //plane
+    private void GeneratePlane() {
+        float pos = (float)scale * 15 - (float)scale/2;
+        Debug.Log(pos);
+        float planeScale = (float)scale * 3;
+        Debug.Log(pos);
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        plane.transform.position = position;
-        plane.transform.localScale = new Vector3(scale * 3 + 1, 1, scale * 3 + 1);
+        plane.transform.position = new Vector3(pos, 1, pos);
+        plane.transform.localScale = new Vector3(planeScale, 0, planeScale);
         plane.GetComponent<Renderer>().material.color = Color.black;
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        int calculatedDistace = scale * length;
-        camera.transform.position = new Vector3(calculatedDistace / 2, calculatedDistace, calculatedDistace / 2);
-        InitialiseMaze();
+    
+    private void Start() {
+        Initialise();
         Generate();
         GenerateWalls();
-        GenerateGround();
+        GeneratePlane();
     }
-
-
 }
