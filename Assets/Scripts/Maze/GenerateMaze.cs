@@ -8,7 +8,7 @@ public class GenerateMaze : MonoBehaviour {
                                             new CoordinatesInMaze(0,1),
                                             new CoordinatesInMaze(-1,0),
                                             new CoordinatesInMaze(0,-1) };
-
+    public Transform camera;
     public int length = 10;
     public int depth = 10;
     public int scale = 5; // change it to 5 for plane to place perfectly
@@ -74,9 +74,9 @@ public class GenerateMaze : MonoBehaviour {
     //plane
     private void GeneratePlane() {
         float pos = (float)scale * 15 - (float)scale/2;
-        Debug.Log(pos);
+        //Debug.Log(pos);
         float planeScale = (float)scale * 3;
-        Debug.Log(pos);
+        //Debug.Log(pos);
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
         plane.transform.position = new Vector3(pos, 1, pos);
         plane.transform.localScale = new Vector3(planeScale, 0, planeScale);
@@ -84,6 +84,9 @@ public class GenerateMaze : MonoBehaviour {
     }
     
     private void Start() {
+        int calculatedDistace = scale * length;
+        camera.transform.position = new Vector3(calculatedDistace / 2, calculatedDistace, calculatedDistace / 2);
+        camera.transform.position = new Vector3(calculatedDistace / 2, calculatedDistace, calculatedDistace / 2);
         Initialise();
         Generate();
         GenerateWalls();

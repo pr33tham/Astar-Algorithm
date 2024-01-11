@@ -1,6 +1,6 @@
 ﻿public class Recursive : GenerateMaze {
     public override void Generate() {
-        Generate(10, 10);
+        Generate(5, 5);
     }
     void Generate(int x, int z) {
         if (CountSquareNeighbours(x, z) >= 2) return;

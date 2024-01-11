@@ -8,7 +8,7 @@ public class CoordinatesInMaze {
         z = _z; //z coordinate
     }
 
-    public Vector2 ToVector() {
+    public Vector3 ToVector() {
         return new Vector2(this.x, this.z);
     }
 
